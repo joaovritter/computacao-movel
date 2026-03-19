@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
 public class AlunoDAO {
     private Conexao conexao;
     private SQLiteDatabase banco;
@@ -32,6 +31,7 @@ public class AlunoDAO {
             values.put("telefone",aluno.getTelefone());
             values.put("endereco",aluno.getEndereco());
             values.put("curso",aluno.getCurso());
+            values.put("fotoBytes", aluno.getFotoBytes());
             return banco.insert("aluno", null, values);
         }
         else{
@@ -43,7 +43,7 @@ public class AlunoDAO {
     public List<Aluno> obterTodos(){
         List<Aluno> alunos = new ArrayList<>();
         //cursor aponta para as linhas retornadas
-        Cursor cursor = banco.query("aluno", new String[]{"id", "nome", "cpf", "telefone"},
+        Cursor cursor = banco.query("aluno", new String[]{"id", "nome", "cpf", "telefone", "fotosBytes"},
                 null, null,null,null,null); //nome da tabela, nome das colunas, completa com null o método
         //que por padrão pede esse número de colunas obrigatórias
         while(cursor.moveToNext()){ //verifica se consegue mover para o próximo ponteiro ou linha
@@ -69,6 +69,7 @@ public class AlunoDAO {
         values.put("telefone", aluno.getTelefone());
         values.put("endereco", aluno.getEndereco());
         values.put("curso", aluno.getCurso());
+        values.put("fotoBytes", aluno.getFotoBytes());
         banco.update("aluno", values, "id = ?", new String[]{aluno.getId().toString()});
     }
 

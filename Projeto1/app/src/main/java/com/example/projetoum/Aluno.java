@@ -9,6 +9,8 @@ public class Aluno implements Serializable {
     private String telefone;
     private String endereco;
     private String curso;
+    private byte[] fotoBytes;
+
 
     public Integer getId() {
         return id;
@@ -58,9 +60,19 @@ public class Aluno implements Serializable {
         this.curso = curso;
     }
 
+    public byte[] getFotoBytes() {
+        return fotoBytes;
+    }
+
+    public void setFotoBytes(byte[] fotoBytes) {
+        this.fotoBytes = fotoBytes;
+    }
+
     @Override
     public String toString(){
         return nome;
     }
+
+
 
 }

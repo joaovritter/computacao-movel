@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class Conexao extends SQLiteOpenHelper{
 
     private static final String name = "banco.db";
-    private static final int version = 1;
+    private static final int version = 2;
 
 
     public Conexao(Context context) {
@@ -17,19 +17,17 @@ public class Conexao extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         // execSQL: Executa um comando SQL puro de DDL (Data Definition Language).
         // Aqui definimos a estrutura da tabela "aluno".
-        db.execSQL("create table aluno(" +
-                "id integer primary key autoincrement, " + // ID automático e único
-                "nome varchar(50), " +                    // Limite de 50 caracteres para o nome
-                "cpf varchar(50), " +
-                "telefone varchar(50), " +
-                "endereco varchar(50), " +// Armazenamos CPF como String/Varchar
-                "curso varchar(50))");                 // Armazenamos telefone como String/Varchar
+        db.execSQL("create table aluno(id integer primary key autoincrement, " + "nome varchar(50), " +
+                "cpf varchar(50), telefone varchar(50), foto_bytes BLOB)");
+
     }
-
-
-
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Exemplo: Se o senhor mudar a versão para 2, poderia colocar aqui um:
-        // db.execSQL("alter table aluno add column email varchar(50)");
+        @Override
+        public void onUpgrade (SQLiteDatabase db,int oldVersion, int newVersion){
+            // Exemplo: Se o senhor mudar a versão para 2, poderia colocar aqui um:
+            // db.execSQL("alter table aluno add column email varchar(50)");
+            if (oldVersion < 2) {
+                // Adiciona a coluna fotoBytes se estiver atualizando da versão 1 para 2
+                db.execSQL("ALTER TABLE aluno ADD COLUMN fotoBytes BLOB");
+            }
+        }
     }
-}
