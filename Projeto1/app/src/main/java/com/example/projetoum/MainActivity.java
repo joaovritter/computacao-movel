@@ -7,9 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -20,19 +21,27 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
 private EditText nome;
 private EditText cpf;
 private EditText telefone;
+private EditText cep;
 private EditText endereco;
 private EditText curso;
-private AlunoDaoRoom alunoDaoRoom;
+private AlunoDAO alunoDao;
 private Aluno aluno = null;
 private ImageView imageView;
 private static final int CAMERA_PERMISSION_CODE = 100; //identificador para a permissão de câmera
 private static final int REQUEST_IMAGE_CAPTURE = 200; //identificador para a captura de imagem
+private String ultimoCepConsultado = "";
 
 
     @Override
@@ -44,16 +53,36 @@ private static final int REQUEST_IMAGE_CAPTURE = 200; //identificador para a cap
         nome = findViewById(R.id.texto1);
         cpf = findViewById(R.id.texto2);
         telefone = findViewById(R.id.texto3);
+        cep = findViewById(R.id.textoCep);
         endereco = findViewById(R.id.texto4);
         curso = findViewById(R.id.texto5);
 
         imageView = findViewById(R.id.imageView);
-        Button btnTakePicture = findViewById(R.id.btnTirarFoto);
+
+
+        // Dispara a busca quando 8 digitos de CEP forem preenchidos.
+        cep.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String cepSomenteNumeros = s.toString().replaceAll("\\D", "");
+                if (cepSomenteNumeros.length() == 8 && !cepSomenteNumeros.equals(ultimoCepConsultado)) {
+                    consultarCep(cepSomenteNumeros);
+                }
+            }
+        });
 
 
         // Instanciando o DAO. Passamos 'this' (a própria Activity) como Contexto.
         // O Contexto é necessário para o SQLite saber em que pasta do sistema salvar o arquivo.
-       alunoDaoRoom = AppDatabase.getInstance(this).alunoDaoRoom();
+       alunoDao = new AlunoDAO(this);
 
         //pegar dados que vem da intent do atualizar
         Intent it = getIntent(); //pega intenção
@@ -81,13 +110,13 @@ private static final int REQUEST_IMAGE_CAPTURE = 200; //identificador para a cap
         String cpfDigitado = cpf.getText().toString();
         String telefoneDigitado = telefone.getText().toString();
 
-        if(!alunoDaoRoom.validaCpf(cpfDigitado)){
+        if(!alunoDao.validaCpf(cpfDigitado)){
             Toast.makeText(this, "CPF inválido!", Toast.LENGTH_LONG).show();
             cpf.requestFocus(); // Opcional: foca no campo de CPF para correção
             return; // Interrompe a execução do método salvar
         }
 
-        if (!alunoDaoRoom.validaTelefone(telefoneDigitado)) {
+        if (!alunoDao.validaTelefone(telefoneDigitado)) {
             Toast.makeText(this, "Telefone inválido! Use o formato (XX) 9XXXX-XXXX.", Toast.LENGTH_LONG).show();
             telefone.requestFocus(); // Opcional: foca no campo de telefone para correção
             return; // Interrompe a execução do método salvar
@@ -100,7 +129,7 @@ private static final int REQUEST_IMAGE_CAPTURE = 200; //identificador para a cap
             aluno.setTelefone(telefone.getText().toString());
             aluno.setEndereco(endereco.getText().toString());
             aluno.setCurso(curso.getText().toString());
-            long id = alunoDaoRoom.inserir(aluno); //inserir o aluno
+            long id = alunoDao.inserir(aluno); //inserir o aluno
             Toast.makeText(this,"Aluno Inserido com sucesso!! com id: ", Toast.LENGTH_SHORT).show();
         }
         else { //ATUALIZA
@@ -109,7 +138,7 @@ private static final int REQUEST_IMAGE_CAPTURE = 200; //identificador para a cap
             aluno.setTelefone(telefone.getText().toString());
             aluno.setEndereco(endereco.getText().toString());
             aluno.setCurso(curso.getText().toString());
-            alunoDaoRoom.atualizar(aluno); //inserir o aluno
+            alunoDao.atualizar(aluno); //inserir o aluno
             Toast.makeText(this,"Aluno Atualizado!! com id: ", Toast.LENGTH_SHORT).show();
         }
 
@@ -128,7 +157,7 @@ private static final int REQUEST_IMAGE_CAPTURE = 200; //identificador para a cap
         // 3. Chamamos o método de persistência do DAO
         // O retorno 'long' indica o ID gerado pelo banco para este novo registro.
 
-        long id = alunoDaoRoom.inserir(a);
+        long id = alunoDao.inserir(a);
 
         if (id == -1) {
             // O método Inserir retorna -1 quando o CPF já existe
@@ -144,8 +173,88 @@ private static final int REQUEST_IMAGE_CAPTURE = 200; //identificador para a cap
     }
 
     public void irLista(View view){
-        Intent intent = new Intent(this, activity_listar_alunos.class);
+        Intent intent = new Intent(this, ListarAlunos.class);
         startActivity(intent);
+    }
+
+    public void buscarCep (View view){
+        String cepDigitado = cep.getText().toString().replaceAll("\\D", "");
+        if (cepDigitado.length() != 8) {
+            Toast.makeText(this, "Informe um CEP com 8 digitos.", Toast.LENGTH_SHORT).show();
+            cep.requestFocus();
+            return;
+        }
+        consultarCep(cepDigitado);
+    }
+
+    private void consultarCep(String cepLimpo) {
+        ultimoCepConsultado = cepLimpo;
+        new Thread(() -> {
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL("https://viacep.com.br/ws/" + cepLimpo + "/json/");
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(7000);
+                connection.setReadTimeout(7000);
+
+                int statusCode = connection.getResponseCode();
+                if (statusCode != HttpURLConnection.HTTP_OK) {
+                    runOnUiThread(() -> Toast.makeText(this, "Erro ao consultar CEP.", Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder resposta = new StringBuilder();
+                String linha;
+                while ((linha = reader.readLine()) != null) {
+                    resposta.append(linha);
+                }
+                reader.close();
+
+                JSONObject json = new JSONObject(resposta.toString());
+                if (json.optBoolean("erro", false)) {
+                    runOnUiThread(() -> {
+                        endereco.setText("");
+                        Toast.makeText(this, "CEP nao encontrado.", Toast.LENGTH_SHORT).show();
+                    });
+                    return;
+                }
+
+                String logradouro = json.optString("logradouro", "");
+                String bairro = json.optString("bairro", "");
+                String localidade = json.optString("localidade", "");
+                String uf = json.optString("uf", "");
+
+                StringBuilder enderecoFormatado = new StringBuilder();
+                if (!logradouro.isEmpty()) {
+                    enderecoFormatado.append(logradouro);
+                }
+                if (!bairro.isEmpty()) {
+                    if (enderecoFormatado.length() > 0) enderecoFormatado.append(" - ");
+                    enderecoFormatado.append(bairro);
+                }
+                if (!localidade.isEmpty()) {
+                    if (enderecoFormatado.length() > 0) enderecoFormatado.append(", ");
+                    enderecoFormatado.append(localidade);
+                }
+                if (!uf.isEmpty()) {
+                    if (enderecoFormatado.length() > 0) enderecoFormatado.append("/");
+                    enderecoFormatado.append(uf);
+                }
+
+                runOnUiThread(() -> {
+                    endereco.setText(enderecoFormatado.toString());
+                    Toast.makeText(this, "Endereco preenchido automaticamente.", Toast.LENGTH_SHORT).show();
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> Toast.makeText(this, "Falha na consulta do CEP. Verifique sua conexao.", Toast.LENGTH_SHORT).show());
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+        }).start();
     }
 
 

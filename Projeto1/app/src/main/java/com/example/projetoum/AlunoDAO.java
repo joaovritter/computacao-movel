@@ -43,7 +43,7 @@ public class AlunoDAO {
     public List<Aluno> obterTodos(){
         List<Aluno> alunos = new ArrayList<>();
         //cursor aponta para as linhas retornadas
-        Cursor cursor = banco.query("aluno", new String[]{"id", "nome", "cpf", "telefone", "fotosBytes"},
+        Cursor cursor = banco.query("aluno", new String[]{"id", "nome", "cpf", "telefone", "endereco", "curso", "fotoBytes"},
                 null, null,null,null,null); //nome da tabela, nome das colunas, completa com null o método
         //que por padrão pede esse número de colunas obrigatórias
         while(cursor.moveToNext()){ //verifica se consegue mover para o próximo ponteiro ou linha
@@ -52,8 +52,12 @@ public class AlunoDAO {
             a.setNome(cursor.getString(1)); // new String[]{"id", "nome", "cpf", "telefone"}, nome é coluna '1'
             a.setCpf(cursor.getString(2)); // new String[]{"id", "nome", "cpf", "telefone"}, cpf é coluna '2'
             a.setTelefone(cursor.getString(3)); // new String[]{"id", "nome", "cpf", "telefone"}, telefone é coluna '3'
+            a.setEndereco(cursor.getString(4));
+            a.setCurso(cursor.getString(5));
+            a.setFotoBytes(cursor.getBlob(6));
             alunos.add(a);
         }
+        cursor.close();
         return alunos;
 
     }

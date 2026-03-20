@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class activity_listar_alunos extends AppCompatActivity {
+public class ListarAlunos extends AppCompatActivity {
 
 
     private ListView listView;
