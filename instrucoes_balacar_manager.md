@@ -1,12 +1,19 @@
 # BalaCar Manager — Guia Completo de Desenvolvimento
 
+> Versão ajustada para usar **classes, tipos, interfaces, funções, variáveis e arquivos do projeto em português**.  
+> Bibliotecas externas continuam com seus nomes originais, como `firebase`, `React Navigation`, `Expo Notifications` e `Google Sign-In`.
+
+---
+
 ## 1. Visão geral do projeto
 
 O **BalaCar Manager** é um aplicativo mobile desenvolvido em **React Native com Expo e TypeScript** para gerenciamento de manutenções automotivas.
 
-O objetivo do sistema é permitir que o usuário faça login com sua conta Google, cadastre veículos, registre manutenções e acompanhe se cada manutenção está em dia, próxima do vencimento ou atrasada.
+O objetivo do sistema é permitir que o usuário faça login com sua conta Google, cadastre veículos, registre manutenções e acompanhe se cada manutenção está **em dia**, **próxima do vencimento** ou **atrasada**.
 
 O sistema também deve permitir o envio de notificações locais para lembrar o usuário sobre manutenções futuras.
+
+---
 
 ## 2. Requisitos obrigatórios atendidos
 
@@ -17,8 +24,10 @@ O sistema também deve permitir o envio de notificações locais para lembrar o 
 | Integração com duas APIs externas | Google Sign-In e Expo Notifications |
 | Persistência de dados | Firebase Cloud Firestore |
 | Tratamento básico de erros | Validação de campos e mensagens amigáveis |
-| Código organizado e comentado | Separação por components, screens, services, utils e types |
+| Código organizado e comentado | Separação por componentes, telas, serviços, utilitários e tipos |
 | Aplicação funcionando na apresentação | Execução com `npm install` e `npx expo start` |
+
+---
 
 ## 3. Tecnologias utilizadas
 
@@ -32,6 +41,8 @@ O sistema também deve permitir o envio de notificações locais para lembrar o 
 - Expo Notifications
 - React Navigation
 - AsyncStorage, se necessário
+
+---
 
 ## 4. APIs externas utilizadas
 
@@ -58,55 +69,94 @@ Funções principais:
 - Agendar lembrete para manutenção futura;
 - Alertar o usuário sobre manutenções próximas.
 
-## 5. Persistência de dados
+---
+
+## 5. Padrão de nomes em português
+
+Neste projeto, os nomes criados por nós devem ficar em português.
+
+Exemplos:
+
+| Inglês | Português |
+|---|---|
+| `Vehicle` | `Veiculo` |
+| `Maintenance` | `Manutencao` |
+| `User` | `Usuario` |
+| `currentKm` | `quilometragemAtual` |
+| `nextDate` | `proximaData` |
+| `nextKm` | `proximaQuilometragem` |
+| `status` | `situacao` |
+| `createdAt` | `criadoEm` |
+| `updatedAt` | `atualizadoEm` |
+| `DashboardScreen` | `TelaInicial` |
+| `VehicleFormScreen` | `TelaFormularioVeiculo` |
+| `MaintenanceFormScreen` | `TelaFormularioManutencao` |
+| `authService` | `servicoAutenticacao` |
+| `vehicleService` | `servicoVeiculo` |
+| `maintenanceService` | `servicoManutencao` |
+| `notificationService` | `servicoNotificacao` |
+
+Observação: nomes de bibliotecas e imports externos não devem ser traduzidos. Por exemplo:
+
+```ts
+import { initializeApp } from "firebase/app";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as Notifications from "expo-notifications";
+```
+
+---
+
+## 6. Persistência de dados
 
 A persistência será feita em nuvem usando **Firebase Cloud Firestore**.
 
-Estrutura sugerida:
+Estrutura sugerida em português:
 
 ```txt
-users/{userId}
-  name
+usuarios/{idUsuario}
+  nome
   email
-  photoURL
-  createdAt
+  urlFoto
+  criadoEm
 
-users/{userId}/vehicles/{vehicleId}
-  brand
-  model
-  year
-  plate
-  currentKm
-  createdAt
-  updatedAt
+usuarios/{idUsuario}/veiculos/{idVeiculo}
+  marca
+  modelo
+  ano
+  placa
+  quilometragemAtual
+  criadoEm
+  atualizadoEm
 
-users/{userId}/vehicles/{vehicleId}/maintenances/{maintenanceId}
-  type
-  description
-  performedDate
-  performedKm
-  nextDate
-  nextKm
-  cost
-  notes
-  status
-  notificationId
-  createdAt
-  updatedAt
+usuarios/{idUsuario}/veiculos/{idVeiculo}/manutencoes/{idManutencao}
+  tipo
+  descricao
+  dataRealizada
+  quilometragemRealizada
+  proximaData
+  proximaQuilometragem
+  custo
+  observacoes
+  situacao
+  idNotificacao
+  criadoEm
+  atualizadoEm
 ```
 
 Cada usuário deve acessar apenas seus próprios dados.
 
-## 6. Funcionalidades do sistema
+---
 
-### 6.1 Autenticação
+## 7. Funcionalidades do sistema
+
+### 7.1 Autenticação
 
 - Login com conta Google;
 - Logout;
 - Salvamento dos dados básicos do usuário no Firestore;
 - Proteção das telas internas para usuários autenticados.
 
-### 6.2 Veículos
+### 7.2 Veículos
 
 O usuário poderá:
 
@@ -119,75 +169,79 @@ O usuário poderá:
 Campos do veículo:
 
 ```txt
-brand
-model
-year
-plate
-currentKm
-createdAt
-updatedAt
+marca
+modelo
+ano
+placa
+quilometragemAtual
+criadoEm
+atualizadoEm
 ```
 
-### 6.3 Manutenções
+### 7.3 Manutenções
 
 O usuário poderá:
 
 - Cadastrar manutenções;
 - Listar manutenções de um veículo;
-- Visualizar status da manutenção;
+- Visualizar situação da manutenção;
 - Agendar lembrete;
 - Excluir manutenção, se desejado.
 
 Campos da manutenção:
 
 ```txt
-type
-description
-performedDate
-performedKm
-nextDate
-nextKm
-cost
-notes
-status
-notificationId
-createdAt
-updatedAt
+tipo
+descricao
+dataRealizada
+quilometragemRealizada
+proximaData
+proximaQuilometragem
+custo
+observacoes
+situacao
+idNotificacao
+criadoEm
+atualizadoEm
 ```
 
-## 7. Regras de status da manutenção
+---
 
-O status da manutenção será calculado com base na data prevista e na quilometragem prevista.
+## 8. Regras de situação da manutenção
+
+A situação da manutenção será calculada com base na data prevista e na quilometragem prevista.
 
 Tipos possíveis:
 
 ```ts
-export type MaintenanceStatus = "em_dia" | "proxima" | "atrasada";
+export type SituacaoManutencao = "em_dia" | "proxima" | "atrasada";
 ```
 
 Regras:
 
 ```txt
-Se nextDate já passou ou currentKm >= nextKm:
-  status = "atrasada"
+Se proximaData já passou ou quilometragemAtual >= proximaQuilometragem:
+  situacao = "atrasada"
 
-Se faltam 15 dias ou menos para nextDate:
-  status = "proxima"
+Se faltam 15 dias ou menos para proximaData:
+  situacao = "proxima"
 
-Se faltam 500 km ou menos para nextKm:
-  status = "proxima"
+Se faltam 500 km ou menos para proximaQuilometragem:
+  situacao = "proxima"
 
 Caso contrário:
-  status = "em_dia"
+  situacao = "em_dia"
 ```
 
 Observações:
 
-- Se `nextDate` estiver vazio, considerar apenas `nextKm`;
-- Se `nextKm` estiver vazio, considerar apenas `nextDate`;
-- Se ambos estiverem vazios, retornar `em_dia`.
+- Se `proximaData` estiver vazia, considerar apenas `proximaQuilometragem`;
+- Se `proximaQuilometragem` estiver vazia, considerar apenas `proximaData`;
+- Se ambas estiverem vazias, retornar `em_dia`.
 
-## 8. Estrutura de pastas
+---
+
+## 9. Estrutura de pastas
 
 ```txt
 balacar-manager/
@@ -200,50 +254,64 @@ balacar-manager/
   README.md
 
   src/
-    components/
-      Button.tsx
-      Input.tsx
-      StatusBadge.tsx
-      VehicleCard.tsx
-      MaintenanceCard.tsx
+    componentes/
+      Botao.tsx
+      CampoTexto.tsx
+      EtiquetaSituacao.tsx
+      CardVeiculo.tsx
+      CardManutencao.tsx
 
-    screens/
-      LoginScreen.tsx
-      DashboardScreen.tsx
-      VehicleFormScreen.tsx
-      VehicleDetailsScreen.tsx
-      MaintenanceFormScreen.tsx
-      ProfileScreen.tsx
+    telas/
+      TelaLogin.tsx
+      TelaInicial.tsx
+      TelaFormularioVeiculo.tsx
+      TelaDetalhesVeiculo.tsx
+      TelaFormularioManutencao.tsx
+      TelaPerfil.tsx
 
-    services/
+    servicos/
       firebase.ts
-      authService.ts
-      vehicleService.ts
-      maintenanceService.ts
-      notificationService.ts
+      servicoAutenticacao.ts
+      servicoVeiculo.ts
+      servicoManutencao.ts
+      servicoNotificacao.ts
 
-    navigation/
-      RootNavigator.tsx
-      AuthNavigator.tsx
-      AppNavigator.tsx
+    navegacao/
+      NavegadorRaiz.tsx
+      NavegadorAutenticacao.tsx
+      NavegadorApp.tsx
 
-    utils/
-      calculateMaintenanceStatus.ts
-      formatDate.ts
-      formatCurrency.ts
+    utilitarios/
+      calcularSituacaoManutencao.ts
+      formatarData.ts
+      formatarMoeda.ts
 
-    types/
-      User.ts
-      Vehicle.ts
-      Maintenance.ts
+    tipos/
+      Usuario.ts
+      Veiculo.ts
+      Manutencao.ts
 ```
 
-## 9. Criação do projeto
+---
+
+## 10. Criação do projeto
 
 Criar o projeto com Expo:
 
 ```bash
 npx create-expo-app balacar-manager --template
+```
+
+Escolha:
+
+```txt
+Blank (TypeScript)
+```
+
+Depois, se aparecer a escolha de SDK:
+
+```txt
+For planning with Expo Go (SDK 54)
 ```
 
 Entrar na pasta:
@@ -257,8 +325,8 @@ Instalar dependências principais:
 ```bash
 npm install firebase
 npm install @react-navigation/native
-npm install @react-navigation/native-stack
 npx expo install react-native-screens react-native-safe-area-context
+npm install @react-navigation/native-stack --legacy-peer-deps
 npx expo install expo-notifications
 npx expo install expo-auth-session expo-web-browser
 npx expo install expo-constants
@@ -277,7 +345,9 @@ Caso tenha problema de cache:
 npx expo start --clear
 ```
 
-## 10. Variáveis de ambiente
+---
+
+## 11. Variáveis de ambiente
 
 Criar um arquivo `.env.example`:
 
@@ -311,16 +381,18 @@ EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=SEU_IOS_CLIENT_ID
 
 Nunca deixar as chaves diretamente no código.
 
-## 11. Configuração do Firebase
+---
 
-Arquivo: `src/services/firebase.ts`
+## 12. Configuração do Firebase
+
+Arquivo: `src/servicos/firebase.ts`
 
 ```ts
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-const firebaseConfig = {
+const configuracaoFirebase = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
@@ -330,108 +402,117 @@ const firebaseConfig = {
 };
 
 // Inicializa o Firebase no app.
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(configuracaoFirebase);
 
 // Exporta autenticação e banco de dados para uso nos serviços.
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const autenticacao = getAuth(app);
+export const bancoDados = getFirestore(app);
 ```
 
-## 12. Tipos do sistema
+---
 
-### `src/types/User.ts`
+## 13. Tipos do sistema
+
+### `src/tipos/Usuario.ts`
 
 ```ts
-export interface AppUser {
+export interface Usuario {
   id: string;
-  name: string;
+  nome: string;
   email: string;
-  photoURL?: string;
-  createdAt?: Date;
+  urlFoto?: string;
+  criadoEm?: Date;
 }
 ```
 
-### `src/types/Vehicle.ts`
+### `src/tipos/Veiculo.ts`
 
 ```ts
-export interface Vehicle {
+export interface Veiculo {
   id?: string;
-  brand: string;
-  model: string;
-  year: string;
-  plate: string;
-  currentKm: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  marca: string;
+  modelo: string;
+  ano: string;
+  placa: string;
+  quilometragemAtual: number;
+  criadoEm?: Date;
+  atualizadoEm?: Date;
 }
 ```
 
-### `src/types/Maintenance.ts`
+### `src/tipos/Manutencao.ts`
 
 ```ts
-export type MaintenanceStatus = "em_dia" | "proxima" | "atrasada";
+export type SituacaoManutencao = "em_dia" | "proxima" | "atrasada";
 
-export interface Maintenance {
+export interface Manutencao {
   id?: string;
-  type: string;
-  description?: string;
-  performedDate: string;
-  performedKm: number;
-  nextDate?: string;
-  nextKm?: number;
-  cost?: number;
-  notes?: string;
-  status: MaintenanceStatus;
-  notificationId?: string | null;
-  createdAt?: Date;
-  updatedAt?: Date;
+  tipo: string;
+  descricao?: string;
+  dataRealizada: string;
+  quilometragemRealizada: number;
+  proximaData?: string;
+  proximaQuilometragem?: number;
+  custo?: number;
+  observacoes?: string;
+  situacao: SituacaoManutencao;
+  idNotificacao?: string | null;
+  criadoEm?: Date;
+  atualizadoEm?: Date;
 }
 ```
 
-## 13. Utilitário de cálculo de status
+---
 
-Arquivo: `src/utils/calculateMaintenanceStatus.ts`
+## 14. Utilitário de cálculo de situação
+
+Arquivo: `src/utilitarios/calcularSituacaoManutencao.ts`
 
 ```ts
-import { MaintenanceStatus } from "../types/Maintenance";
+import { SituacaoManutencao } from "../tipos/Manutencao";
 
-interface Params {
-  currentKm: number;
-  nextDate?: string;
-  nextKm?: number;
+interface Parametros {
+  quilometragemAtual: number;
+  proximaData?: string;
+  proximaQuilometragem?: number;
 }
 
-export function calculateMaintenanceStatus({
-  currentKm,
-  nextDate,
-  nextKm,
-}: Params): MaintenanceStatus {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+export function calcularSituacaoManutencao({
+  quilometragemAtual,
+  proximaData,
+  proximaQuilometragem,
+}: Parametros): SituacaoManutencao {
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
 
-  let isOverdueByDate = false;
-  let isSoonByDate = false;
+  let estaAtrasadaPorData = false;
+  let estaProximaPorData = false;
 
-  if (nextDate) {
-    const targetDate = new Date(nextDate);
-    targetDate.setHours(0, 0, 0, 0);
+  if (proximaData) {
+    const dataAlvo = new Date(proximaData);
+    dataAlvo.setHours(0, 0, 0, 0);
 
-    const diffTime = targetDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diferencaTempo = dataAlvo.getTime() - hoje.getTime();
+    const diferencaDias = Math.ceil(diferencaTempo / (1000 * 60 * 60 * 24));
 
-    isOverdueByDate = diffDays < 0;
-    isSoonByDate = diffDays >= 0 && diffDays <= 15;
+    estaAtrasadaPorData = diferencaDias < 0;
+    estaProximaPorData = diferencaDias >= 0 && diferencaDias <= 15;
   }
 
-  const isOverdueByKm = typeof nextKm === "number" && currentKm >= nextKm;
-  const isSoonByKm =
-    typeof nextKm === "number" && nextKm - currentKm > 0 && nextKm - currentKm <= 500;
+  const estaAtrasadaPorKm =
+    typeof proximaQuilometragem === "number" &&
+    quilometragemAtual >= proximaQuilometragem;
 
-  if (isOverdueByDate || isOverdueByKm) {
+  const estaProximaPorKm =
+    typeof proximaQuilometragem === "number" &&
+    proximaQuilometragem - quilometragemAtual > 0 &&
+    proximaQuilometragem - quilometragemAtual <= 500;
+
+  if (estaAtrasadaPorData || estaAtrasadaPorKm) {
     return "atrasada";
   }
 
-  if (isSoonByDate || isSoonByKm) {
+  if (estaProximaPorData || estaProximaPorKm) {
     return "proxima";
   }
 
@@ -439,51 +520,55 @@ export function calculateMaintenanceStatus({
 }
 ```
 
-## 14. Utilitários de formatação
+---
 
-### `src/utils/formatDate.ts`
+## 15. Utilitários de formatação
+
+### `src/utilitarios/formatarData.ts`
 
 ```ts
-export function formatDate(date?: string): string {
-  if (!date) return "Não informado";
+export function formatarData(data?: string): string {
+  if (!data) return "Não informado";
 
-  const parsedDate = new Date(date);
+  const dataConvertida = new Date(data);
 
-  if (Number.isNaN(parsedDate.getTime())) {
+  if (Number.isNaN(dataConvertida.getTime())) {
     return "Data inválida";
   }
 
-  return parsedDate.toLocaleDateString("pt-BR");
+  return dataConvertida.toLocaleDateString("pt-BR");
 }
 ```
 
-### `src/utils/formatCurrency.ts`
+### `src/utilitarios/formatarMoeda.ts`
 
 ```ts
-export function formatCurrency(value?: number): string {
-  if (typeof value !== "number") return "R$ 0,00";
+export function formatarMoeda(valor?: number): string {
+  if (typeof valor !== "number") return "R$ 0,00";
 
-  return value.toLocaleString("pt-BR", {
+  return valor.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
   });
 }
 ```
 
-## 15. Serviço de autenticação
+---
 
-Arquivo: `src/services/authService.ts`
+## 16. Serviço de autenticação
+
+Arquivo: `src/servicos/servicoAutenticacao.ts`
 
 ```ts
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { GoogleAuthProvider, signInWithCredential, signOut } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "./firebase";
+import { autenticacao, bancoDados } from "./firebase";
 
 WebBrowser.maybeCompleteAuthSession();
 
-export function useGoogleAuthRequest() {
+export function usarRequisicaoAutenticacaoGoogle() {
   return Google.useAuthRequest({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
     androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
@@ -491,36 +576,36 @@ export function useGoogleAuthRequest() {
   });
 }
 
-export async function signInWithGoogleToken(idToken: string) {
+export async function entrarComTokenGoogle(idToken: string) {
   try {
-    const credential = GoogleAuthProvider.credential(idToken);
-    const result = await signInWithCredential(auth, credential);
+    const credencial = GoogleAuthProvider.credential(idToken);
+    const resultado = await signInWithCredential(autenticacao, credencial);
 
-    const user = result.user;
+    const usuario = resultado.user;
 
     await setDoc(
-      doc(db, "users", user.uid),
+      doc(bancoDados, "usuarios", usuario.uid),
       {
-        name: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        createdAt: serverTimestamp(),
+        nome: usuario.displayName,
+        email: usuario.email,
+        urlFoto: usuario.photoURL,
+        criadoEm: serverTimestamp(),
       },
       { merge: true }
     );
 
-    return user;
-  } catch (error) {
-    console.error("Erro ao fazer login com Google:", error);
+    return usuario;
+  } catch (erro) {
+    console.error("Erro ao fazer login com Google:", erro);
     throw new Error("Não foi possível fazer login com Google.");
   }
 }
 
-export async function logout() {
+export async function sairDaConta() {
   try {
-    await signOut(auth);
-  } catch (error) {
-    console.error("Erro ao sair:", error);
+    await signOut(autenticacao);
+  } catch (erro) {
+    console.error("Erro ao sair:", erro);
     throw new Error("Não foi possível sair da conta.");
   }
 }
@@ -528,9 +613,11 @@ export async function logout() {
 
 Observação: dependendo da versão do Expo e do Firebase, pode ser necessário ajustar o fluxo de `idToken` ou usar `response.authentication?.idToken` na tela de login.
 
-## 16. Serviço de veículos
+---
 
-Arquivo: `src/services/vehicleService.ts`
+## 17. Serviço de veículos
+
+Arquivo: `src/servicos/servicoVeiculo.ts`
 
 ```ts
 import {
@@ -544,70 +631,80 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "./firebase";
-import { Vehicle } from "../types/Vehicle";
+import { bancoDados } from "./firebase";
+import { Veiculo } from "../tipos/Veiculo";
 
-function vehiclesCollection(userId: string) {
-  return collection(db, "users", userId, "vehicles");
+function colecaoVeiculos(idUsuario: string) {
+  return collection(bancoDados, "usuarios", idUsuario, "veiculos");
 }
 
-export async function createVehicle(userId: string, vehicle: Vehicle) {
+export async function criarVeiculo(idUsuario: string, veiculo: Veiculo) {
   try {
-    await addDoc(vehiclesCollection(userId), {
-      ...vehicle,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+    await addDoc(colecaoVeiculos(idUsuario), {
+      ...veiculo,
+      criadoEm: serverTimestamp(),
+      atualizadoEm: serverTimestamp(),
     });
-  } catch (error) {
-    console.error("Erro ao salvar veículo:", error);
+  } catch (erro) {
+    console.error("Erro ao salvar veículo:", erro);
     throw new Error("Não foi possível salvar o veículo.");
   }
 }
 
-export async function getVehicles(userId: string): Promise<Vehicle[]> {
+export async function buscarVeiculos(idUsuario: string): Promise<Veiculo[]> {
   try {
-    const q = query(vehiclesCollection(userId), orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
+    const consulta = query(colecaoVeiculos(idUsuario), orderBy("criadoEm", "desc"));
+    const resultado = await getDocs(consulta);
 
-    return snapshot.docs.map((docItem) => ({
-      id: docItem.id,
-      ...docItem.data(),
-    })) as Vehicle[];
-  } catch (error) {
-    console.error("Erro ao buscar veículos:", error);
+    return resultado.docs.map((documento) => ({
+      id: documento.id,
+      ...documento.data(),
+    })) as Veiculo[];
+  } catch (erro) {
+    console.error("Erro ao buscar veículos:", erro);
     throw new Error("Não foi possível buscar os veículos.");
   }
 }
 
-export async function updateVehicle(userId: string, vehicleId: string, data: Partial<Vehicle>) {
+export async function atualizarVeiculo(
+  idUsuario: string,
+  idVeiculo: string,
+  dados: Partial<Veiculo>
+) {
   try {
-    await updateDoc(doc(db, "users", userId, "vehicles", vehicleId), {
-      ...data,
-      updatedAt: serverTimestamp(),
+    await updateDoc(doc(bancoDados, "usuarios", idUsuario, "veiculos", idVeiculo), {
+      ...dados,
+      atualizadoEm: serverTimestamp(),
     });
-  } catch (error) {
-    console.error("Erro ao atualizar veículo:", error);
+  } catch (erro) {
+    console.error("Erro ao atualizar veículo:", erro);
     throw new Error("Não foi possível atualizar o veículo.");
   }
 }
 
-export async function updateVehicleKm(userId: string, vehicleId: string, currentKm: number) {
-  return updateVehicle(userId, vehicleId, { currentKm });
+export async function atualizarQuilometragemVeiculo(
+  idUsuario: string,
+  idVeiculo: string,
+  quilometragemAtual: number
+) {
+  return atualizarVeiculo(idUsuario, idVeiculo, { quilometragemAtual });
 }
 
-export async function deleteVehicle(userId: string, vehicleId: string) {
+export async function excluirVeiculo(idUsuario: string, idVeiculo: string) {
   try {
-    await deleteDoc(doc(db, "users", userId, "vehicles", vehicleId));
-  } catch (error) {
-    console.error("Erro ao excluir veículo:", error);
+    await deleteDoc(doc(bancoDados, "usuarios", idUsuario, "veiculos", idVeiculo));
+  } catch (erro) {
+    console.error("Erro ao excluir veículo:", erro);
     throw new Error("Não foi possível excluir o veículo.");
   }
 }
 ```
 
-## 17. Serviço de manutenções
+---
 
-Arquivo: `src/services/maintenanceService.ts`
+## 18. Serviço de manutenções
+
+Arquivo: `src/servicos/servicoManutencao.ts`
 
 ```ts
 import {
@@ -621,85 +718,124 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "./firebase";
-import { Maintenance } from "../types/Maintenance";
-import { calculateMaintenanceStatus } from "../utils/calculateMaintenanceStatus";
+import { bancoDados } from "./firebase";
+import { Manutencao } from "../tipos/Manutencao";
+import { calcularSituacaoManutencao } from "../utilitarios/calcularSituacaoManutencao";
 
-function maintenancesCollection(userId: string, vehicleId: string) {
-  return collection(db, "users", userId, "vehicles", vehicleId, "maintenances");
+function colecaoManutencoes(idUsuario: string, idVeiculo: string) {
+  return collection(
+    bancoDados,
+    "usuarios",
+    idUsuario,
+    "veiculos",
+    idVeiculo,
+    "manutencoes"
+  );
 }
 
-export async function createMaintenance(
-  userId: string,
-  vehicleId: string,
-  currentKm: number,
-  maintenance: Omit<Maintenance, "status">
+export async function criarManutencao(
+  idUsuario: string,
+  idVeiculo: string,
+  quilometragemAtual: number,
+  manutencao: Omit<Manutencao, "situacao">
 ) {
   try {
-    const status = calculateMaintenanceStatus({
-      currentKm,
-      nextDate: maintenance.nextDate,
-      nextKm: maintenance.nextKm,
+    const situacao = calcularSituacaoManutencao({
+      quilometragemAtual,
+      proximaData: manutencao.proximaData,
+      proximaQuilometragem: manutencao.proximaQuilometragem,
     });
 
-    await addDoc(maintenancesCollection(userId, vehicleId), {
-      ...maintenance,
-      status,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+    await addDoc(colecaoManutencoes(idUsuario, idVeiculo), {
+      ...manutencao,
+      situacao,
+      criadoEm: serverTimestamp(),
+      atualizadoEm: serverTimestamp(),
     });
-  } catch (error) {
-    console.error("Erro ao salvar manutenção:", error);
+  } catch (erro) {
+    console.error("Erro ao salvar manutenção:", erro);
     throw new Error("Não foi possível salvar a manutenção.");
   }
 }
 
-export async function getMaintenances(userId: string, vehicleId: string): Promise<Maintenance[]> {
+export async function buscarManutencoes(
+  idUsuario: string,
+  idVeiculo: string
+): Promise<Manutencao[]> {
   try {
-    const q = query(maintenancesCollection(userId, vehicleId), orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
+    const consulta = query(
+      colecaoManutencoes(idUsuario, idVeiculo),
+      orderBy("criadoEm", "desc")
+    );
 
-    return snapshot.docs.map((docItem) => ({
-      id: docItem.id,
-      ...docItem.data(),
-    })) as Maintenance[];
-  } catch (error) {
-    console.error("Erro ao buscar manutenções:", error);
+    const resultado = await getDocs(consulta);
+
+    return resultado.docs.map((documento) => ({
+      id: documento.id,
+      ...documento.data(),
+    })) as Manutencao[];
+  } catch (erro) {
+    console.error("Erro ao buscar manutenções:", erro);
     throw new Error("Não foi possível buscar as manutenções.");
   }
 }
 
-export async function updateMaintenance(
-  userId: string,
-  vehicleId: string,
-  maintenanceId: string,
-  data: Partial<Maintenance>
+export async function atualizarManutencao(
+  idUsuario: string,
+  idVeiculo: string,
+  idManutencao: string,
+  dados: Partial<Manutencao>
 ) {
   try {
-    await updateDoc(doc(db, "users", userId, "vehicles", vehicleId, "maintenances", maintenanceId), {
-      ...data,
-      updatedAt: serverTimestamp(),
-    });
-  } catch (error) {
-    console.error("Erro ao atualizar manutenção:", error);
+    await updateDoc(
+      doc(
+        bancoDados,
+        "usuarios",
+        idUsuario,
+        "veiculos",
+        idVeiculo,
+        "manutencoes",
+        idManutencao
+      ),
+      {
+        ...dados,
+        atualizadoEm: serverTimestamp(),
+      }
+    );
+  } catch (erro) {
+    console.error("Erro ao atualizar manutenção:", erro);
     throw new Error("Não foi possível atualizar a manutenção.");
   }
 }
 
-export async function deleteMaintenance(userId: string, vehicleId: string, maintenanceId: string) {
+export async function excluirManutencao(
+  idUsuario: string,
+  idVeiculo: string,
+  idManutencao: string
+) {
   try {
-    await deleteDoc(doc(db, "users", userId, "vehicles", vehicleId, "maintenances", maintenanceId));
-  } catch (error) {
-    console.error("Erro ao excluir manutenção:", error);
+    await deleteDoc(
+      doc(
+        bancoDados,
+        "usuarios",
+        idUsuario,
+        "veiculos",
+        idVeiculo,
+        "manutencoes",
+        idManutencao
+      )
+    );
+  } catch (erro) {
+    console.error("Erro ao excluir manutenção:", erro);
     throw new Error("Não foi possível excluir a manutenção.");
   }
 }
 
-export function getMaintenanceSummary(maintenances: Maintenance[]) {
-  return maintenances.reduce(
-    (summary, maintenance) => {
-      summary[maintenance.status] += 1;
-      return summary;
+export function obterResumoManutencoes(manutencoes: Manutencao[]) {
+  return manutencoes.reduce(
+    (resumo, manutencao) => {
+      resumo[manutencao.situacao] += 1;
+      return resumo;
     },
     {
       em_dia: 0,
@@ -710,9 +846,11 @@ export function getMaintenanceSummary(maintenances: Maintenance[]) {
 }
 ```
 
-## 18. Serviço de notificações
+---
 
-Arquivo: `src/services/notificationService.ts`
+## 19. Serviço de notificações
+
+Arquivo: `src/servicos/servicoNotificacao.ts`
 
 ```ts
 import * as Notifications from "expo-notifications";
@@ -725,21 +863,21 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export async function requestNotificationPermission(): Promise<boolean> {
+export async function solicitarPermissaoNotificacao(): Promise<boolean> {
   const { status } = await Notifications.getPermissionsAsync();
 
   if (status === "granted") {
     return true;
   }
 
-  const request = await Notifications.requestPermissionsAsync();
-  return request.status === "granted";
+  const solicitacao = await Notifications.requestPermissionsAsync();
+  return solicitacao.status === "granted";
 }
 
-export async function sendTestNotification() {
-  const hasPermission = await requestNotificationPermission();
+export async function enviarNotificacaoTeste() {
+  const possuiPermissao = await solicitarPermissaoNotificacao();
 
-  if (!hasPermission) {
+  if (!possuiPermissao) {
     throw new Error("Permissão de notificação negada.");
   }
 
@@ -752,68 +890,74 @@ export async function sendTestNotification() {
   });
 }
 
-export async function scheduleMaintenanceNotification({
-  title,
-  body,
-  date,
+export async function agendarNotificacaoManutencao({
+  titulo,
+  mensagem,
+  data,
 }: {
-  title: string;
-  body: string;
-  date: Date;
+  titulo: string;
+  mensagem: string;
+  data: Date;
 }) {
-  const hasPermission = await requestNotificationPermission();
+  const possuiPermissao = await solicitarPermissaoNotificacao();
 
-  if (!hasPermission) {
+  if (!possuiPermissao) {
     throw new Error("Permissão de notificação negada.");
   }
 
-  const notificationId = await Notifications.scheduleNotificationAsync({
+  const idNotificacao = await Notifications.scheduleNotificationAsync({
     content: {
-      title,
-      body,
+      title: titulo,
+      body: mensagem,
     },
-    trigger: date,
+    trigger: data,
   });
 
-  return notificationId;
+  return idNotificacao;
 }
 
-export async function cancelNotification(notificationId: string) {
-  await Notifications.cancelScheduledNotificationAsync(notificationId);
+export async function cancelarNotificacao(idNotificacao: string) {
+  await Notifications.cancelScheduledNotificationAsync(idNotificacao);
 }
 ```
 
-## 19. Componentes reutilizáveis
+---
 
-### `src/components/Button.tsx`
+## 20. Componentes reutilizáveis
+
+### `src/componentes/Botao.tsx`
 
 ```tsx
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from "react-native";
 
-interface Props {
-  title: string;
-  onPress: () => void;
-  loading?: boolean;
+interface Propriedades {
+  titulo: string;
+  aoPressionar: () => void;
+  carregando?: boolean;
 }
 
-export function Button({ title, onPress, loading = false }: Props) {
+export function Botao({ titulo, aoPressionar, carregando = false }: Propriedades) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress} disabled={loading}>
-      {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.text}>{title}</Text>}
+    <TouchableOpacity style={estilos.botao} onPress={aoPressionar} disabled={carregando}>
+      {carregando ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        <Text style={estilos.texto}>{titulo}</Text>
+      )}
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
+const estilos = StyleSheet.create({
+  botao: {
     backgroundColor: "#0F172A",
     padding: 14,
     borderRadius: 10,
     alignItems: "center",
     marginVertical: 8,
   },
-  text: {
+  texto: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
@@ -821,18 +965,24 @@ const styles = StyleSheet.create({
 });
 ```
 
-### `src/components/Input.tsx`
+### `src/componentes/CampoTexto.tsx`
 
 ```tsx
 import React from "react";
 import { TextInput, StyleSheet, TextInputProps } from "react-native";
 
-export function Input(props: TextInputProps) {
-  return <TextInput style={styles.input} placeholderTextColor="#777" {...props} />;
+export function CampoTexto(propriedades: TextInputProps) {
+  return (
+    <TextInput
+      style={estilos.campo}
+      placeholderTextColor="#777"
+      {...propriedades}
+    />
+  );
 }
 
-const styles = StyleSheet.create({
-  input: {
+const estilos = StyleSheet.create({
+  campo: {
     backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "#ddd",
@@ -843,31 +993,35 @@ const styles = StyleSheet.create({
 });
 ```
 
-### `src/components/StatusBadge.tsx`
+### `src/componentes/EtiquetaSituacao.tsx`
 
 ```tsx
 import React from "react";
 import { Text, StyleSheet } from "react-native";
-import { MaintenanceStatus } from "../types/Maintenance";
+import { SituacaoManutencao } from "../tipos/Manutencao";
 
-interface Props {
-  status: MaintenanceStatus;
+interface Propriedades {
+  situacao: SituacaoManutencao;
 }
 
-const statusMap = {
-  em_dia: { label: "Em dia", color: "#16A34A" },
-  proxima: { label: "Próxima", color: "#F97316" },
-  atrasada: { label: "Atrasada", color: "#DC2626" },
+const mapaSituacao = {
+  em_dia: { rotulo: "Em dia", cor: "#16A34A" },
+  proxima: { rotulo: "Próxima", cor: "#F97316" },
+  atrasada: { rotulo: "Atrasada", cor: "#DC2626" },
 };
 
-export function StatusBadge({ status }: Props) {
-  const current = statusMap[status];
+export function EtiquetaSituacao({ situacao }: Propriedades) {
+  const situacaoAtual = mapaSituacao[situacao];
 
-  return <Text style={[styles.badge, { backgroundColor: current.color }]}>{current.label}</Text>;
+  return (
+    <Text style={[estilos.etiqueta, { backgroundColor: situacaoAtual.cor }]}>
+      {situacaoAtual.rotulo}
+    </Text>
+  );
 }
 
-const styles = StyleSheet.create({
-  badge: {
+const estilos = StyleSheet.create({
+  etiqueta: {
     color: "#fff",
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -878,37 +1032,39 @@ const styles = StyleSheet.create({
 });
 ```
 
-### `src/components/VehicleCard.tsx`
+### `src/componentes/CardVeiculo.tsx`
 
 ```tsx
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { Vehicle } from "../types/Vehicle";
+import { Veiculo } from "../tipos/Veiculo";
 
-interface Props {
-  vehicle: Vehicle;
-  onPress: () => void;
+interface Propriedades {
+  veiculo: Veiculo;
+  aoPressionar: () => void;
 }
 
-export function VehicleCard({ vehicle, onPress }: Props) {
+export function CardVeiculo({ veiculo, aoPressionar }: Propriedades) {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Text style={styles.title}>{vehicle.brand} {vehicle.model}</Text>
-      <Text>Ano: {vehicle.year}</Text>
-      <Text>Placa: {vehicle.plate}</Text>
-      <Text>Km atual: {vehicle.currentKm}</Text>
+    <TouchableOpacity style={estilos.card} onPress={aoPressionar}>
+      <Text style={estilos.titulo}>
+        {veiculo.marca} {veiculo.modelo}
+      </Text>
+      <Text>Ano: {veiculo.ano}</Text>
+      <Text>Placa: {veiculo.placa}</Text>
+      <Text>Km atual: {veiculo.quilometragemAtual}</Text>
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
+const estilos = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     padding: 14,
     borderRadius: 12,
     marginVertical: 8,
   },
-  title: {
+  titulo: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 4,
@@ -916,42 +1072,45 @@ const styles = StyleSheet.create({
 });
 ```
 
-### `src/components/MaintenanceCard.tsx`
+### `src/componentes/CardManutencao.tsx`
 
 ```tsx
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Maintenance } from "../types/Maintenance";
-import { StatusBadge } from "./StatusBadge";
-import { formatDate } from "../utils/formatDate";
-import { formatCurrency } from "../utils/formatCurrency";
+import { Manutencao } from "../tipos/Manutencao";
+import { EtiquetaSituacao } from "./EtiquetaSituacao";
+import { formatarData } from "../utilitarios/formatarData";
+import { formatarMoeda } from "../utilitarios/formatarMoeda";
 
-interface Props {
-  maintenance: Maintenance;
+interface Propriedades {
+  manutencao: Manutencao;
 }
 
-export function MaintenanceCard({ maintenance }: Props) {
+export function CardManutencao({ manutencao }: Propriedades) {
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{maintenance.type}</Text>
-      <Text>{maintenance.description}</Text>
-      <Text>Data realizada: {formatDate(maintenance.performedDate)}</Text>
-      <Text>Próxima data: {formatDate(maintenance.nextDate)}</Text>
-      <Text>Próximo km: {maintenance.nextKm ?? "Não informado"}</Text>
-      <Text>Custo: {formatCurrency(maintenance.cost)}</Text>
-      <StatusBadge status={maintenance.status} />
+    <View style={estilos.card}>
+      <Text style={estilos.titulo}>{manutencao.tipo}</Text>
+      <Text>{manutencao.descricao}</Text>
+      <Text>Data realizada: {formatarData(manutencao.dataRealizada)}</Text>
+      <Text>Próxima data: {formatarData(manutencao.proximaData)}</Text>
+      <Text>
+        Próxima quilometragem:{" "}
+        {manutencao.proximaQuilometragem ?? "Não informado"}
+      </Text>
+      <Text>Custo: {formatarMoeda(manutencao.custo)}</Text>
+      <EtiquetaSituacao situacao={manutencao.situacao} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const estilos = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     padding: 14,
     borderRadius: 12,
     marginVertical: 8,
   },
-  title: {
+  titulo: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 4,
@@ -959,82 +1118,108 @@ const styles = StyleSheet.create({
 });
 ```
 
-## 20. Navegação
+---
 
-### `src/navigation/AuthNavigator.tsx`
+## 21. Navegação
 
-```tsx
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { LoginScreen } from "../screens/LoginScreen";
-
-const Stack = createNativeStackNavigator();
-
-export function AuthNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-    </Stack.Navigator>
-  );
-}
-```
-
-### `src/navigation/AppNavigator.tsx`
+### `src/navegacao/NavegadorAutenticacao.tsx`
 
 ```tsx
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { DashboardScreen } from "../screens/DashboardScreen";
-import { VehicleFormScreen } from "../screens/VehicleFormScreen";
-import { VehicleDetailsScreen } from "../screens/VehicleDetailsScreen";
-import { MaintenanceFormScreen } from "../screens/MaintenanceFormScreen";
-import { ProfileScreen } from "../screens/ProfileScreen";
+import { TelaLogin } from "../telas/TelaLogin";
 
-const Stack = createNativeStackNavigator();
+const Pilha = createNativeStackNavigator();
 
-export function AppNavigator() {
+export function NavegadorAutenticacao() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Dashboard" component={DashboardScreen} options={{ title: "BalaCar Manager" }} />
-      <Stack.Screen name="VehicleForm" component={VehicleFormScreen} options={{ title: "Cadastrar veículo" }} />
-      <Stack.Screen name="VehicleDetails" component={VehicleDetailsScreen} options={{ title: "Detalhes do veículo" }} />
-      <Stack.Screen name="MaintenanceForm" component={MaintenanceFormScreen} options={{ title: "Cadastrar manutenção" }} />
-      <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: "Perfil" }} />
-    </Stack.Navigator>
+    <Pilha.Navigator>
+      <Pilha.Screen
+        name="Login"
+        component={TelaLogin}
+        options={{ headerShown: false }}
+      />
+    </Pilha.Navigator>
   );
 }
 ```
 
-### `src/navigation/RootNavigator.tsx`
+### `src/navegacao/NavegadorApp.tsx`
+
+```tsx
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { TelaInicial } from "../telas/TelaInicial";
+import { TelaFormularioVeiculo } from "../telas/TelaFormularioVeiculo";
+import { TelaDetalhesVeiculo } from "../telas/TelaDetalhesVeiculo";
+import { TelaFormularioManutencao } from "../telas/TelaFormularioManutencao";
+import { TelaPerfil } from "../telas/TelaPerfil";
+
+const Pilha = createNativeStackNavigator();
+
+export function NavegadorApp() {
+  return (
+    <Pilha.Navigator>
+      <Pilha.Screen
+        name="TelaInicial"
+        component={TelaInicial}
+        options={{ title: "BalaCar Manager" }}
+      />
+      <Pilha.Screen
+        name="TelaFormularioVeiculo"
+        component={TelaFormularioVeiculo}
+        options={{ title: "Cadastrar veículo" }}
+      />
+      <Pilha.Screen
+        name="TelaDetalhesVeiculo"
+        component={TelaDetalhesVeiculo}
+        options={{ title: "Detalhes do veículo" }}
+      />
+      <Pilha.Screen
+        name="TelaFormularioManutencao"
+        component={TelaFormularioManutencao}
+        options={{ title: "Cadastrar manutenção" }}
+      />
+      <Pilha.Screen
+        name="TelaPerfil"
+        component={TelaPerfil}
+        options={{ title: "Perfil" }}
+      />
+    </Pilha.Navigator>
+  );
+}
+```
+
+### `src/navegacao/NavegadorRaiz.tsx`
 
 ```tsx
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "../services/firebase";
-import { AuthNavigator } from "./AuthNavigator";
-import { AppNavigator } from "./AppNavigator";
+import { autenticacao } from "../servicos/firebase";
+import { NavegadorAutenticacao } from "./NavegadorAutenticacao";
+import { NavegadorApp } from "./NavegadorApp";
 
-export function RootNavigator() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+export function NavegadorRaiz() {
+  const [usuario, definirUsuario] = useState<User | null>(null);
+  const [carregando, definirCarregando] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
+    const cancelarInscricao = onAuthStateChanged(autenticacao, (usuarioAtual) => {
+      definirUsuario(usuarioAtual);
+      definirCarregando(false);
     });
 
-    return unsubscribe;
+    return cancelarInscricao;
   }, []);
 
-  if (loading) {
+  if (carregando) {
     return null;
   }
 
   return (
     <NavigationContainer>
-      {user ? <AppNavigator /> : <AuthNavigator />}
+      {usuario ? <NavegadorApp /> : <NavegadorAutenticacao />}
     </NavigationContainer>
   );
 }
@@ -1044,18 +1229,20 @@ export function RootNavigator() {
 
 ```tsx
 import React from "react";
-import { RootNavigator } from "./src/navigation/RootNavigator";
+import { NavegadorRaiz } from "./src/navegacao/NavegadorRaiz";
 
 export default function App() {
-  return <RootNavigator />;
+  return <NavegadorRaiz />;
 }
 ```
 
-## 21. Telas do sistema
+---
+
+## 22. Telas do sistema
 
 As telas podem ser implementadas inicialmente de forma simples, priorizando funcionamento.
 
-### `LoginScreen.tsx`
+### `TelaLogin.tsx`
 
 Responsabilidades:
 
@@ -1067,13 +1254,13 @@ Responsabilidades:
 Fluxo esperado:
 
 ```tsx
-// 1. Criar request com useGoogleAuthRequest
+// 1. Criar requisição com usarRequisicaoAutenticacaoGoogle
 // 2. Ao clicar no botão, chamar promptAsync()
-// 3. Se response for success, capturar idToken
-// 4. Chamar signInWithGoogleToken(idToken)
+// 3. Se resposta for success, capturar idToken
+// 4. Chamar entrarComTokenGoogle(idToken)
 ```
 
-### `DashboardScreen.tsx`
+### `TelaInicial.tsx`
 
 Responsabilidades:
 
@@ -1084,15 +1271,15 @@ Responsabilidades:
 - Navegar para detalhes do veículo;
 - Navegar para perfil.
 
-### `VehicleFormScreen.tsx`
+### `TelaFormularioVeiculo.tsx`
 
 Responsabilidades:
 
 - Formulário de cadastro de veículo;
 - Validação dos campos;
-- Salvar no Firestore usando `createVehicle`.
+- Salvar no Firestore usando `criarVeiculo`.
 
-### `VehicleDetailsScreen.tsx`
+### `TelaDetalhesVeiculo.tsx`
 
 Responsabilidades:
 
@@ -1102,17 +1289,17 @@ Responsabilidades:
 - Navegar para cadastro de manutenção;
 - Atualizar quilometragem.
 
-### `MaintenanceFormScreen.tsx`
+### `TelaFormularioManutencao.tsx`
 
 Responsabilidades:
 
 - Formulário de manutenção;
 - Validação de campos;
-- Calcular status;
+- Calcular situação;
 - Agendar notificação, se ativada;
 - Salvar manutenção no Firestore.
 
-### `ProfileScreen.tsx`
+### `TelaPerfil.tsx`
 
 Responsabilidades:
 
@@ -1120,15 +1307,18 @@ Responsabilidades:
 - Botão para testar notificação;
 - Botão de logout.
 
-## 22. Exemplo de validação de formulário
+---
+
+## 23. Exemplo de validação de formulário
 
 ```ts
-function validateVehicleForm() {
-  if (!brand.trim()) return "Informe a marca do veículo.";
-  if (!model.trim()) return "Informe o modelo do veículo.";
-  if (!year.trim()) return "Informe o ano do veículo.";
-  if (!plate.trim()) return "Informe a placa do veículo.";
-  if (!currentKm.trim() || Number.isNaN(Number(currentKm))) {
+function validarFormularioVeiculo() {
+  if (!marca.trim()) return "Informe a marca do veículo.";
+  if (!modelo.trim()) return "Informe o modelo do veículo.";
+  if (!ano.trim()) return "Informe o ano do veículo.";
+  if (!placa.trim()) return "Informe a placa do veículo.";
+
+  if (!quilometragemAtual.trim() || Number.isNaN(Number(quilometragemAtual))) {
     return "Informe uma quilometragem válida.";
   }
 
@@ -1136,7 +1326,9 @@ function validateVehicleForm() {
 }
 ```
 
-## 23. Tratamento de erros
+---
+
+## 24. Tratamento de erros
 
 Usar mensagens amigáveis com `Alert.alert`.
 
@@ -1144,10 +1336,13 @@ Exemplo:
 
 ```ts
 try {
-  await createVehicle(user.uid, vehicle);
+  await criarVeiculo(usuario.uid, veiculo);
   navigation.goBack();
-} catch (error) {
-  Alert.alert("Erro", "Não foi possível salvar o veículo. Verifique os dados e tente novamente.");
+} catch (erro) {
+  Alert.alert(
+    "Erro",
+    "Não foi possível salvar o veículo. Verifique os dados e tente novamente."
+  );
 }
 ```
 
@@ -1164,7 +1359,9 @@ Permissão de notificação negada.
 Não foi possível sair da conta.
 ```
 
-## 24. Visual sugerido
+---
+
+## 25. Visual sugerido
 
 Cores:
 
@@ -1184,10 +1381,12 @@ Estilo geral:
 - Tela com fundo cinza claro;
 - Cards brancos com bordas arredondadas;
 - Botões azul escuro;
-- Status com badges coloridas;
-- Inputs brancos com borda clara.
+- Situação com etiquetas coloridas;
+- Campos brancos com borda clara.
 
-## 25. Configuração no Firebase
+---
+
+## 26. Configuração no Firebase
 
 Passos:
 
@@ -1202,7 +1401,9 @@ Passos:
 9. Iniciar em modo de teste durante desenvolvimento;
 10. Ajustar regras de segurança antes da entrega final.
 
-## 26. Configuração no Google Cloud/Firebase para Google Sign-In
+---
+
+## 27. Configuração no Google Cloud/Firebase para Google Sign-In
 
 Passos gerais:
 
@@ -1213,7 +1414,9 @@ Passos gerais:
 5. Criar Client ID iOS, se for testar em iPhone;
 6. Copiar os IDs para o `.env`.
 
-## 27. Regras simples do Firestore para desenvolvimento
+---
+
+## 28. Regras simples do Firestore para desenvolvimento
 
 Durante desenvolvimento, pode usar modo de teste temporariamente.
 
@@ -1223,14 +1426,16 @@ Para uma versão mais segura, usar algo como:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    match /usuarios/{idUsuario}/{documento=**} {
+      allow read, write: if request.auth != null && request.auth.uid == idUsuario;
     }
   }
 }
 ```
 
-## 28. Cuidados com a apresentação
+---
+
+## 29. Cuidados com a apresentação
 
 Antes da apresentação final:
 
@@ -1245,7 +1450,9 @@ Antes da apresentação final:
 - Testar navegação entre todas as telas;
 - Testar em celular real pelo Expo Go, se possível.
 
-## 29. Dados de teste sugeridos
+---
+
+## 30. Dados de teste sugeridos
 
 ### Veículo
 
@@ -1265,7 +1472,7 @@ Descrição: Óleo 5W30 e filtro
 Data realizada: 2026-05-01
 Km realizada: 50000
 Próxima data: 2026-11-01
-Próxima km: 60000
+Próxima quilometragem: 60000
 Custo: 280
 ```
 
@@ -1277,7 +1484,7 @@ Descrição: Alinhamento preventivo
 Data realizada: 2026-05-10
 Km realizada: 51500
 Próxima data: 2026-06-10
-Próxima km: 52500
+Próxima quilometragem: 52500
 Custo: 120
 ```
 
@@ -1289,11 +1496,13 @@ Descrição: Revisão do sistema de freio
 Data realizada: 2025-12-01
 Km realizada: 45000
 Próxima data: 2026-04-01
-Próxima km: 51000
+Próxima quilometragem: 51000
 Custo: 350
 ```
 
-## 30. README sugerido
+---
+
+## 31. README sugerido
 
 O `README.md` deve conter:
 
@@ -1339,13 +1548,15 @@ npx expo start
 Explicar o arquivo .env.example.
 
 ## Estrutura do Firestore
-Explicar users, vehicles e maintenances.
+Explicar usuarios, veiculos e manutencoes.
 
 ## Funcionalidades
 Listar funcionalidades implementadas.
 ```
 
-## 31. Critérios de conclusão
+---
+
+## 32. Critérios de conclusão
 
 O projeto estará completo quando:
 
@@ -1356,7 +1567,7 @@ O projeto estará completo quando:
 - O usuário conseguir listar veículos;
 - O usuário conseguir acessar detalhes do veículo;
 - O usuário conseguir cadastrar manutenção;
-- O status da manutenção for calculado automaticamente;
+- A situação da manutenção for calculada automaticamente;
 - Os dados forem salvos no Firestore;
 - A notificação de teste funcionar;
 - A navegação entre telas funcionar;
@@ -1364,7 +1575,9 @@ O projeto estará completo quando:
 - O README estiver preenchido;
 - O `.env.example` estiver no projeto.
 
-## 32. Funcionalidades que não devem ser implementadas
+---
+
+## 33. Funcionalidades que não devem ser implementadas
 
 Não implementar:
 
@@ -1381,10 +1594,12 @@ Não implementar:
 
 O foco deve permanecer no gerenciamento de manutenção automotiva.
 
-## 33. Resumo final do sistema
+---
+
+## 34. Resumo final do sistema
 
 O **BalaCar Manager** é um app mobile de controle de manutenção automotiva. Ele usa **Google Sign-In** para autenticação, **Expo Notifications** para lembretes e **Firebase Firestore** para persistência em nuvem.
 
-O sistema permite cadastrar veículos, registrar manutenções, calcular o status de cada manutenção e alertar o usuário sobre revisões próximas ou atrasadas.
+O sistema permite cadastrar veículos, registrar manutenções, calcular a situação de cada manutenção e alertar o usuário sobre revisões próximas ou atrasadas.
 
 O projeto é simples, direto, sem backend próprio e adequado para uma apresentação acadêmica de Computação Móvel.
